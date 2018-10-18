@@ -7,8 +7,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname + '/../client/dist'))
 
-app.get('/henlo', function(req, res) {
-  db.assembleProductList(function(){});
+app.get('/random', function(req, res) {
+  db.assembleProductList(function(result){
+    console.log(result);
+  });
   res.send(200)
 });
 

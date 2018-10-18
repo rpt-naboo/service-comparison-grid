@@ -31,7 +31,6 @@ const hasDupName = (name ,arr) => {
   }
   return false;
 }
-//db quaries
 
 const insertMainProduct = (product, callback) => {
   let price = generateRandomPrice("400");
@@ -39,13 +38,6 @@ const insertMainProduct = (product, callback) => {
   let rating = generateRandomRating();
   let soldBy = generateRandomSoldBy();
   let quaryArr = [product, price, shippingCost, rating, soldBy];
-  // let quaryObj = {
-  //   name: product,
-  //   price: price,
-  //   shipping_cost: shippingCost,
-  //   customer_rating: rating,
-  //   sold_by: soldBy
-  // }
   let quaryStr = "INSERT INTO main_product (name, price, shipping_cost, customer_rating, sold_by)\
   VALUE (?)"
   db.query(quaryStr, [quaryArr], function(err, result) {
@@ -112,7 +104,7 @@ const findRandomMainProduct = (callback) => {
 }
 
 const findClones = (productId, callback) => {
-  let quaryStr = ' SELECT * FROM product_clone\
+  let quaryStr = 'SELECT * FROM product_clone\
   WHERE clone_of = ?'
   let quaryArr = [productId];
   db.query(quaryStr, [quaryArr], function(err, result) {
@@ -126,9 +118,13 @@ const findClones = (productId, callback) => {
 
 const assembleProductList = (callback) => {
   findRandomMainProduct(function(result) {
-    let mainProduct = result[0];
-    findClones(mainProduct.product_id, function(result) {
-      console.log(result);
+    let output = [];
+    output.push(result[0]);
+    findClones(output[0].product_id, function(result) {
+      for (let i = 0; i < result.length; i++) {
+        output.push(result[0]);
+      }
+      callback(output);
     })
   })
 }
