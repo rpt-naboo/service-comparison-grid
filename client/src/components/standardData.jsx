@@ -1,9 +1,10 @@
 import React from 'react';
 
 const StandardData = (props) => {
+  console.log(props)
     return (
       <div>
-        table
+        product
       </div>
     )
 }

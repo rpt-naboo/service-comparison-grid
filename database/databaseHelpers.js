@@ -95,10 +95,11 @@ const findRandomMainProduct = (callback) => {
   let quaryStr = 'SELECT * FROM main_product\
   ORDER BY RAND() LIMIT 1'
   db.query(quaryStr, function(err, result) {
+    let output = formatQueryData(result);
     if (err) {
       console.log(err);
     } else {
-      callback(result);
+      callback(output);
     }
   });
 }
@@ -108,10 +109,11 @@ const findClones = (productId, callback) => {
   WHERE clone_of = ?'
   let quaryArr = [productId];
   db.query(quaryStr, [quaryArr], function(err, result) {
+    let output = formatQueryData(result);
     if (err) {
       console.log(err);
     } else {
-      callback(result);
+      callback(output);
     }
   });
 }
@@ -122,11 +124,17 @@ const assembleProductList = (callback) => {
     output.push(result[0]);
     findClones(output[0].product_id, function(result) {
       for (let i = 0; i < result.length; i++) {
-        output.push(result[0]);
+        output.push(result[i]);
       }
       callback(output);
     })
   })
+}
+
+const formatQueryData = (data) => {
+  let string = JSON.stringify(data);
+  let json = JSON.parse(string);
+  return json;
 }
 
 module.exports.assembleProductList = assembleProductList;
