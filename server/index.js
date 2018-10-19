@@ -4,14 +4,14 @@ const db = require('../database/databaseHelpers.js');
 
 const app = express();
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/../client/dist'))
 
 app.get('/random', function(req, res) {
   db.assembleProductList(function(result){
     console.log(result);
+    res.json(result);
   });
-  res.send(200)
 });
 
 app.listen(3000, function() {
