@@ -5,7 +5,10 @@ const StandardData = (props) => {
   return (
     <div>
       {props.products.map(function(product) {
-        return <span>test</span>
+        <div>
+          <div>PICTURE TODO</div>
+          <div>{product.name}</div>
+        </div>
       })}
     </div>
   )
