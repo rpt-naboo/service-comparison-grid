@@ -6,7 +6,7 @@ const StandardData = (props) => {
   return (
     <div>
       {props.products.map(function(product) {
-        return <StandardDataListing />
+        return <StandardDataListing product={product}/>
       })}
     </div>
   )

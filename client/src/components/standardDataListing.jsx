@@ -1,8 +1,9 @@
 import React from 'react';
 
 const StandardDataListing = (props) => {
+  console.log(props)
   return (
-    <span>test</span>
+    <span>{props.product.name}</span>
   )
 }
 
