@@ -4,11 +4,22 @@ import StandardDataListing from './standardDataListing.jsx';
 const StandardData = (props) => {
   console.log(props)
   return (
-    <div>
+    <table>
+      <thead>
+        <tr>
+          <th>PICTURE</th>
+          <th>NAME</th>
+          <th>ADD TO CART</th>
+          <th>RATING</th>
+          <th>PRICE</th>
+          <th>SHIPPING</th>
+          <th>SOLD BY</th>
+        </tr>
+      </thead>
       {props.products.map(function(product) {
         return <StandardDataListing product={product}/>
       })}
-    </div>
+    </table>
   )
 }
 
