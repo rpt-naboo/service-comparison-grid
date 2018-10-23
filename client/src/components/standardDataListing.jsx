@@ -6,12 +6,12 @@ const StandardDataListing = (props) => {
     <tbody>
       <tr>
         <th>TODO</th>
-        <th>NAME</th>
+        <th>{props.product.name}</th>
         <th>TODO</th>
-        <th>RATING</th>
-        <th>PRICE</th>
-        <th>SHIPPING</th>
-        <th>SOLD BY</th>
+        <th>{props.product.customer_rating}</th>
+        <th>{props.product.price}</th>
+        <th>{props.product.shipping_cost}</th>
+        <th>{props.product.sold_by}</th>
       </tr>
     </tbody>
   )
