@@ -11,7 +11,6 @@ const StandardData = (props) => {
         </tr>
         <tr>
           <th>NAME</th>
-            {renderData('name')}
         </tr>
         <tr>
           <th>ADD TO CART</th>

@@ -8,7 +8,6 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      heading: ['PICTURE', 'NAME', 'ATC', 'RATING', 'PRICE', 'SHIPPING', 'SOLD'];
       products: []
     };
   }
