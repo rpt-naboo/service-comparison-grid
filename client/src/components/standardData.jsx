@@ -4,7 +4,7 @@ import StandardDataListing from './standardDataListing.jsx';
 const StandardData = (props) => {
   console.log(props)
   return (
-    <table>
+    <table className="productDataTable">
       <thead>
         <tr>
           <th>PICTURE</th>
