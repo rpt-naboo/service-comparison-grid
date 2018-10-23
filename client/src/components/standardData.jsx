@@ -11,9 +11,7 @@ const StandardData = (props) => {
         </tr>
         <tr>
           <th>NAME</th>
-          {props.products.map(function(product) {
-            return <span>{product.name}</span>
-          })}
+            {renderData('name')}
         </tr>
         <tr>
           <th>ADD TO CART</th>
