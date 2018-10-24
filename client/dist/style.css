@@ -60,3 +60,11 @@
   border-bottom: none;
   border-right: none;
 }
+
+.thisProduct {
+  font-weight: bold!important;
+}
+
+.productName {
+  font-weight: light;
+}

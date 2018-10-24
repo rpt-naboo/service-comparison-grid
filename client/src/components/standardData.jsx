@@ -14,8 +14,12 @@ const StandardData = (props) => {
         </tr>
         <tr>
           <th></th>
-            {props.products.map(function(product) {
-              return <td>{product.name}</td>
+            {props.products.map(function(product, index) {
+              if (index === 0) {
+                return <td className='productName'><span className='thisProduct'>This Product </span>{product.name}</td>
+              } else {
+                return <td>{product.name}</td>
+              }
             })}
         </tr>
         <tr>
