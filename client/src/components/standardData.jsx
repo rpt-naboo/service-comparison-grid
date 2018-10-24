@@ -27,25 +27,25 @@ const StandardData = (props) => {
         <tr>
           <th className='heading'>RATING</th>
             {props.products.map(function(product) {
-              return <td>{product.customer_rating}</td>
+              return <td className='productInfo'>{product.customer_rating}</td>
             })}
         </tr>
         <tr>
           <th className='heading'>PRICE</th>
             {props.products.map(function(product) {
-              return <td>{product.price}</td>
+              return <td className='price'>{product.price}</td>
             })}
         </tr>
         <tr>
           <th className='heading'>SHIPPING</th>
             {props.products.map(function(product) {
-              return <td>{product.shipping_cost}</td>
+              return <td className='productInfo'>{product.shipping_cost}</td>
             })}
         </tr>
         <tr>
           <th className='heading'>SOLD BY</th>
             {props.products.map(function(product) {
-              return <td>{product.sold_by}</td>
+              return <td className='productInfo'>{product.sold_by}</td>
             })}
         </tr>
       </thead>
