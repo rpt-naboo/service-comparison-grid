@@ -9,7 +9,7 @@ const StandardData = (props) => {
         <tr>
           <th></th>
             {props.products.map(function(product) {
-              return <td className='productIMG'><img src='https://images-na.ssl-images-amazon.com/images/G/01/amazonui/loading/loading-4x._CB391853216_.gif' /></td>
+              return <td><img className='productIMG' src='https://images-na.ssl-images-amazon.com/images/G/01/amazonui/loading/loading-4x._CB391853216_.gif' /></td>
             })}
         </tr>
         <tr>
