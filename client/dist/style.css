@@ -1,5 +1,5 @@
 .productDataTable {
-  color: seagreen;
+
 }
 
 .ATCButton {
@@ -15,4 +15,12 @@
   text-align: center;
   text-decoration: none!important;
   vertical-align: middle;
+}
+
+.productIMG {
+  padding: 6px 14px 5px;
+  border: 0;
+  vertical-align: top;
+  max-width: 100%;
+  box-sizing: border-box;
 }

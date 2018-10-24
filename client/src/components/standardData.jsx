@@ -7,19 +7,19 @@ const StandardData = (props) => {
     <table className="productDataTable">
       <thead>
         <tr>
-          <th>PICTURE</th>
+          <th></th>
             {props.products.map(function(product) {
-              return <td><img src='https://images-na.ssl-images-amazon.com/images/G/01/amazonui/loading/loading-4x._CB391853216_.gif' /></td>
+              return <td className='productIMG'><img src='https://images-na.ssl-images-amazon.com/images/G/01/amazonui/loading/loading-4x._CB391853216_.gif' /></td>
             })}
         </tr>
         <tr>
-          <th>NAME</th>
+          <th></th>
             {props.products.map(function(product) {
               return <td>{product.name}</td>
             })}
         </tr>
         <tr>
-          <th>ADD TO CART</th>
+          <th></th>
             {props.products.map(function(product) {
               return <td><button className='ATCButton'>ADD TO CART</button></td>
             })}
