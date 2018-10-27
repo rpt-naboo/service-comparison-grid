@@ -68,3 +68,19 @@
 .productName {
   font-weight: light;
 }
+
+.ratingRow {
+  background-color: lightgrey;
+}
+
+.priceRow {
+  background-color: grey;
+}
+
+.shippingRow {
+  background-color: lightgrey;
+}
+
+.soldByRow {
+  background-color: grey;
+}
