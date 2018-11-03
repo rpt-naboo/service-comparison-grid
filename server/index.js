@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const db = require('../database/databaseHelpers.js');
@@ -14,6 +15,6 @@ app.get('/random', function(req, res) {
   });
 });
 
-app.listen(3000, function() {
-  console.log('listening on port 3000!');
+app.listen(process.env.PORT, function() {
+  console.log(`listening on port ${process.env.PORT}`);
 });
