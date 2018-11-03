@@ -21,7 +21,7 @@ module.exports = {
       {
         test : /\.css$/,
         include : SRC_DIR,
-        loaders: ['style-loader', 'css-loader', 'css']
+        loaders: ['style-loader', 'css-loader', 'css'],
         query: {
           presets: ['react', 'es2015']
        }
