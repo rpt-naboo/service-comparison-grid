@@ -1,4 +1,6 @@
 branch-defaults:
+  deployment:
+    environment: node-project-dev
   master:
     environment: null
 global:
