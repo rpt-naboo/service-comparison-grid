@@ -11,6 +11,7 @@ app.use(express.static(__dirname + '/../client/dist'))
 app.get('/random', function(req, res) {
   db.assembleProductList(function(result){
     console.log(result);
+   	//remember this data is already formatted correctly
     res.json(result);
   });
 });
