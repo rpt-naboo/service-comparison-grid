@@ -19,7 +19,7 @@ const generateRandomSoldBy = () => {
 
 const catNames = ['color', 'department', 'weight'];
 const generateRandomCategories = () => {
-  let categories = []
+  let categories = {};
   let catNum = Math.floor(Math.random() * 4);
   if (catNum === 0) {
     return false;
@@ -27,11 +27,11 @@ const generateRandomCategories = () => {
   for (let i = 0; i < catNum; i++) {
     let catName = catNames[i];
     if (catName === 'color') {
-      categories.push(faker.fake("{{commerce.color}}"));
+      categories[catName] = faker.fake("{{commerce.color}}");
     } else if (catName === 'department') {
-      categories.push(faker.fake("{{commerce.department}}"));
+      categories[catName] = faker.fake("{{commerce.department}}");
     } else {
-      categories.push(faker.fake("{{random.number}} oz"));
+      categories[catName] = faker.fake("{{random.number}} oz");
     }
   }
   return categories;
@@ -64,18 +64,23 @@ const formatArray = (arr) => {
 }
 
 const formatCategory = (id) => {
+  let output = [];
   let catData = generateRandomCategories();
   if (catData !== false) {
-    catData.unshift(id);
-    return catData; 
+    for (let cat in catData) {
+      let catName = cat;
+      let catValue = catData[cat];
+      output.push([id, catName, catValue]);
+    }
+    return output;
   }
 }
 
 
 async function insertProduct () {
   let p2 = new Promise ((resolve, reject) => {
-    console.log('inserting csv data');
-    let filePath = "mysql_product.csv";
+    console.log('inserting product csv data');
+    let filePath = 'mysql_product.csv';
     let columns = '(name, price, shipping_cost, customer_rating, sold_by)'
     let quaryStr = `LOAD DATA LOCAL INFILE '${filePath}' INTO TABLE product FIELDS TERMINATED BY ','\
     LINES TERMINATED BY '\\n' ${columns}`;
@@ -83,13 +88,29 @@ async function insertProduct () {
       if (err) {
         reject(err);
       } else {
-        console.log('first');
-        console.log(result);
         resolve(result);
       }
     })
   })
   return await p2
+}
+
+async function insertProductCategories () {
+  console.log('inserting categories csv data');
+  let p1 = new Promise((resolve, reject) => {
+    let filePath = 'mysql_category.csv';
+    let columns = '(belongs_to, category_name, category_value)'
+    let quaryStr = `LOAD DATA LOCAL INFILE '${filePath}' INTO TABLE category FIELDS TERMINATED BY ','\
+    LINES TERMINATED BY '\\n' ${columns}`;
+    db.query(quaryStr, function(err, result) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(result);
+      }
+    })
+  })
+  return await p1;
 }
 
 const findLastInsertedProductId = () => {
@@ -105,29 +126,6 @@ const findLastInsertedProductId = () => {
   })
 }
 
-const insertProductCategories = (productId, categories) => {
-  return new Promise((resolve, reject) => {
-    if (categories === false) {
-      return resolve();
-    }
-    let quaryArr = [];
-    for (let cat in categories) {
-      catName = cat;
-      catValue = categories[cat]
-      let tempArr = [productId, catName, catValue];
-      quaryArr.push(tempArr);
-    }
-    let quaryStr = "INSERT INTO category (belongs_to, category_name, category_value)\
-    VALUES ?"
-    db.query(quaryStr, [quaryArr], function(err, result) {
-      if (err) {
-        return reject(err);
-      } else {
-        return resolve(result);
-      }
-    });
-  })
-}
 
 const findRandomMainProduct = (callback) => {
   let quaryStr = 'SELECT * FROM main_product\
