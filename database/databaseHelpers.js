@@ -49,7 +49,18 @@ const findProductId = (name, callback) => {
     }
   })
 }
-
+const findLastInsertedProductId = () => {
+  return new Promise((resolve, reject) => {
+    let quaryStr = "SELECT MAX(product_id) FROM product"
+    db.query(quaryStr, function(err, result) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(Object.values(result[0])[0]);
+      }
+    })
+  })
+}
 
 
 // const insertProductCategories = (productId, categories) => {
@@ -78,7 +89,6 @@ const findProductId = (name, callback) => {
 // }
 
 const formatArray = (arr) => {
-    //console.log(5)
     let quaryArr = []
     arr.forEach((name, index) => {
       let price = generateRandomPrice("400");
@@ -173,3 +183,7 @@ module.exports.findProductId = findProductId;
 module.exports.generateRandomCategories = generateRandomCategories;
 module.exports.insertProductCategories = insertProductCategories;
 module.exports.formatArray = formatArray;
+
+findLastInsertedProductId().then((result) => {
+  console.log(result - 99);
+})
