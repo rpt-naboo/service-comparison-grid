@@ -49,58 +49,20 @@ const findProductId = (name, callback) => {
     }
   })
 }
-const findLastInsertedProductId = () => {
-  return new Promise((resolve, reject) => {
-    let quaryStr = "SELECT MAX(product_id) FROM product"
-    db.query(quaryStr, function(err, result) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(Object.values(result[0])[0]);
-      }
-    })
-  })
-}
-
-
-// const insertProductCategories = (productId, categories) => {
-//   return new Promise((resolve, reject) => {
-//     if (categories === false) {
-//       return resolve();
-//     }
-//     for (let cat in categories) {
-//       return new Promise((resolve, reject) => {
-//         let catName = cat;
-//         let catValue = categories[cat];
-//         let quaryArr = [productId, catName, catValue];
-//         let quaryStr = "INSERT INTO category (belongs_to, category_name, category_value)\
-//         VALUES (?)"
-//         db.query(quaryStr, [quaryArr], function(err, result) {
-//           if (err) {
-//             return reject(err);
-//           } else {
-//             return resolve(result);
-//           }
-//         })
-//       })
-//     }
-//     return resolve();
-//   })
-// }
 
 const formatArray = (arr) => {
     let quaryArr = []
-    arr.forEach((name, index) => {
+    arr.forEach((name) => {
       let price = generateRandomPrice("400");
       let shippingCost = generateRandomPrice("50");
       let rating = generateRandomRating();
       let soldBy = generateRandomSoldBy();
       let tempArr = [name, price, shippingCost, rating, soldBy];
       quaryArr.push(tempArr);
-      console.log(`${index} records formatted`)
     });
     csvHelpers.writeToCSV(quaryArr);
 }
+
 
 async function insertProduct () {
   let p2 = new Promise ((resolve, reject) => {
@@ -113,12 +75,26 @@ async function insertProduct () {
       if (err) {
         reject(err);
       } else {
-        console.log('DONE')
+        console.log('first');
+        console.log(result);
         resolve(result);
       }
     })
   })
   return await p2
+}
+
+const findLastInsertedProductId = () => {
+  return new Promise((resolve, reject) => {
+    let quaryStr = "SELECT MAX(product_id) FROM product"
+    db.query(quaryStr, function(err, result) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(Object.values(result[0])[0]);
+      }
+    })
+  })
 }
 
 const insertProductCategories = (productId, categories) => {
@@ -183,7 +159,4 @@ module.exports.findProductId = findProductId;
 module.exports.generateRandomCategories = generateRandomCategories;
 module.exports.insertProductCategories = insertProductCategories;
 module.exports.formatArray = formatArray;
-
-findLastInsertedProductId().then((result) => {
-  console.log(result - 99);
-})
+module.exports.findLastInsertedProductId = findLastInsertedProductId;
