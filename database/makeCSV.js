@@ -19,7 +19,6 @@ const writeToCSV = (array) => {
 		})
 }
 
-
 // fs.truncate('/ztest.csv', 0, function(){
 // 	console.log('check file now');
 // })
