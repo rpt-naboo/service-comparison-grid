@@ -27,7 +27,7 @@ const seedInsertProduct = (names) => {
 
 const bulkNames = () => {
     let newNames = [];
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 101; i++) {
       newNames.push(generateProductName());
     }
     seedInsertProduct(newNames);

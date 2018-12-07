@@ -19,7 +19,7 @@ const generateRandomSoldBy = () => {
 
 const catNames = ['color', 'department', 'weight'];
 const generateRandomCategories = () => {
-  let categories = {}
+  let categories = []
   let catNum = Math.floor(Math.random() * 4);
   if (catNum === 0) {
     return false;
@@ -27,11 +27,11 @@ const generateRandomCategories = () => {
   for (let i = 0; i < catNum; i++) {
     let catName = catNames[i];
     if (catName === 'color') {
-      categories[catName] = faker.fake("{{commerce.color}}");
+      categories.push(faker.fake("{{commerce.color}}"));
     } else if (catName === 'department') {
-      categories[catName] = faker.fake("{{commerce.department}}");
+      categories.push(faker.fake("{{commerce.department}}"));
     } else {
-      categories[catName] = faker.fake("{{random.number}} oz");
+      categories.push(faker.fake("{{random.number}} oz"));
     }
   }
   return categories;
@@ -61,6 +61,14 @@ const formatArray = (arr) => {
       quaryArr.push(tempArr);
     });
     csvHelpers.writeToCSV(quaryArr);
+}
+
+const formatCategory = (id) => {
+  let catData = generateRandomCategories();
+  if (catData !== false) {
+    catData.unshift(id);
+    return catData; 
+  }
 }
 
 
@@ -160,3 +168,4 @@ module.exports.generateRandomCategories = generateRandomCategories;
 module.exports.insertProductCategories = insertProductCategories;
 module.exports.formatArray = formatArray;
 module.exports.findLastInsertedProductId = findLastInsertedProductId;
+module.exports.formatCategory = formatCategory;
