@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const csv = require('fast-csv');
 
-const ws = fs.createWriteStream(`ztest.csv`);
+const ws = fs.createWriteStream(`mysql_product.csv`);
 
 const helpers = require('./databaseHelpers.js');
 

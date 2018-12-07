@@ -49,7 +49,7 @@ const bulkNames = () => {
     //console.log(2);
     let newNames = [];
     console.log('starting name generation')
-    for (let i = 0; i < 1000000; i++) {
+    for (let i = 0; i < 100; i++) {
       newNames.push(generateProductName());
       console.log(`${i} names generated`);
     }

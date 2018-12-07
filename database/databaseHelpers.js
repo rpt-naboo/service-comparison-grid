@@ -117,7 +117,7 @@ const formatArray = (arr) => {
 async function insertProduct () {
   let p2 = new Promise ((resolve, reject) => {
     console.log('inserting csv data');
-    let filePath = "ztest.csv";
+    let filePath = "mysql_product.csv";
     let columns = '(name, price, shipping_cost, customer_rating, sold_by)'
     let quaryStr = `LOAD DATA LOCAL INFILE '${filePath}' INTO TABLE product FIELDS TERMINATED BY ','\
     LINES TERMINATED BY '\\n' ${columns}`;
