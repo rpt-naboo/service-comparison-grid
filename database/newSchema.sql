@@ -18,5 +18,5 @@ CREATE TABLE IF NOT EXISTS category (
 	category_name VARCHAR(255) NOT NULL,
 	category_value VARCHAR(255) NOT NULL,
 	PRIMARY KEY(category_id),
-	FOREIGN KEY (category_id) REFERENCES product(product_id)
+	FOREIGN KEY (belongs_to) REFERENCES product(product_id)
 );

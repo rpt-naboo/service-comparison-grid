@@ -4,7 +4,7 @@ const connection = mysql.createConnection({
   host : 'localhost',
   user : 'root',
   password: 'password',
-  database: 'comparison_grid'
+  database: 'comparison_grid_cat'
 });
 
 connection.connect(function(err) {
