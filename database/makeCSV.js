@@ -12,20 +12,11 @@ const writeToCategoryCSV = (array) => {
 	console.log('writing to categories csv');
 	catWrite
 		.on("finish", function() {
-			console.log('hello')
 			helpers.insertProductCategories();
 		})
 }
 
 const writeToCSV = (array) => {
-
-	Object.defineProperty(Array.prototype, 'flat', {
-    value: function(depth = 1) {
-      return this.reduce(function (flat, toFlatten) {
-        return flat.concat((Array.isArray(toFlatten) && (depth-1)) ? toFlatten.flat(depth-1) : toFlatten);
-      }, []);
-    }
-	});
 
 	csv.write(array, {headers:true}).pipe(ws);
 	console.log('writing to product csv');
@@ -33,18 +24,23 @@ const writeToCSV = (array) => {
 		.on("finish", function() {
 			helpers.insertProduct()
 			.then(() => {
+				console.log('finding lastinsertid')
 				return helpers.findLastInsertedProductId()
 			})
 			.then((result) => {
-				let startingId = result - 10;
+				console.log(`last insert id found ${result}`)
+				let startingId = result - 10000001;
 				let categories = [];
+				console.log(`formatting categories`);
 				for (let i = startingId; i < result; i++) {
 					let formatted = helpers.formatCategory(i);
 					if (formatted !== undefined) {
-						categories.push(formatted);
+						formatted.forEach((item) => {
+							categories.push(item);
+						})
 					}
 				}
-				categories = categories.flat();
+				console.log(`Done formatting categories`);
 				writeToCategoryCSV(categories);
 			})
 		})

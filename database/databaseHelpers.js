@@ -88,6 +88,7 @@ async function insertProduct () {
       if (err) {
         reject(err);
       } else {
+        console.log('inserting product csv data DONE')
         resolve(result);
       }
     })
@@ -106,6 +107,7 @@ async function insertProductCategories () {
       if (err) {
         reject(err);
       } else {
+        console.log('DONE');
         resolve(result);
       }
     })
