@@ -1,24 +1,36 @@
 const helpers = require('./databaseHelpers.js');
+const faker = require('faker');
+const con = require('./index.js');
+const db = con.connection;
 
-const mainProducts = ["IPhone", "PreSonus AudioBox", "Smart Watch", "Jawbone Speaker", "Turtle Beach", "Wood Frame Sunglasses", "Phone Case", "3D Printer", "Phone Power Bank", "Drone", "Fitness Tracker", "Solar Panel", "Rechargeable Lighter", "E-Cig", "Rice Cooker", "Smart Water Detector", "Pressure Cooker", "Wireless Charging Pad", "Hair Dryer", "Robot Vacuum", "Knife Sharpener", "Shower Curtain Liner", "Stream Stink", "DNA Test", "Alexa"];
+//this will keep track of all the names used and how many times it was used.
+//names used is forgotten after seed is finished running.
+let names = {}
 
-const insertMainProducts = (products) => {
-  for (let i = 0; i < products.length; i++) {
-    let product = products[i];
-    helpers.insertMainProduct(product, function(result) {
-      console.log(result);
-    })
+const generateProductName = () => {
+  let tempName = faker.fake("{{commerce.productName}}");
+  let name = names[tempName];
+  if (name !== undefined) {
+    name++;
+  } else {
+    name = 1;
   }
+  return `${tempName} Num. ${name}`
 }
 
-const insertProductClone = (products) => {
-  for (let i = 0; i < products.length; i++) {
-    let product = products[i];
-    helpers.insertProductClone(product, function(result) {
-      console.log(result);
-    })
-  }
+let productCounter = 0;
+let catCounter = 0;
+
+const seedInsertProduct = (names) => {
+  helpers.formatArray(names);
 }
 
-//insertMainProducts(mainProducts);
-insertProductClone(mainProducts);
+const bulkNames = () => {
+    let newNames = [];
+    for (let i = 0; i < 10000000; i++) {
+      newNames.push(generateProductName());
+    }
+    seedInsertProduct(newNames);
+}
+
+bulkNames();

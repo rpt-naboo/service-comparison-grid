@@ -1,13 +1,7 @@
 const con = require('./index.js');
 const db = con.connection;
-
-const generateRandomName = (name) => {
-  let text = ['MK', 'X', 'VS']
-  let numbers = ['I', 'II', 'III', 'IV', '500', '600', '700', '800', '900', '1000']
-  let randomText = text[Math.floor(Math.random() * text.length)];
-  let randomNumber = numbers[Math.floor(Math.random() * numbers.length )];
-  return `${name} ${randomText} ${randomNumber}`;
-}
+const faker = require('faker');
+const csvHelpers = require('./makeCSV.js');
 
 //use this for price AND shipping cost
 const generateRandomPrice = (maxPrice) => {
@@ -19,68 +13,33 @@ const generateRandomRating = () => {
 }
 
 const generateRandomSoldBy = () => {
-  let venders = ['Walmart', 'Amazon', 'Adam', 'Jonathan', 'Josh', 'Hao-Han']
+  let venders = ['Walmart', 'Amazon', 'Adam', 'Jonathan', 'Josh', 'Hao-Han', 'Hallie']
   return venders[Math.floor(Math.random() * venders.length)];
 }
 
-const hasDupName = (name ,arr) => {
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i].includes(name)) {
-      return true
+const catNames = ['color', 'department', 'weight'];
+const generateRandomCategories = () => {
+  let categories = {};
+  let catNum = Math.floor(Math.random() * 4);
+  if (catNum === 0) {
+    return false;
+  }
+  for (let i = 0; i < catNum; i++) {
+    let catName = catNames[i];
+    if (catName === 'color') {
+      categories[catName] = faker.fake("{{commerce.color}}");
+    } else if (catName === 'department') {
+      categories[catName] = faker.fake("{{commerce.department}}");
+    } else {
+      categories[catName] = faker.fake("{{random.number}} oz");
     }
   }
-  return false;
+  return categories;
 }
 
-const insertMainProduct = (product, callback) => {
-  let price = generateRandomPrice("400");
-  let shippingCost = generateRandomPrice("50");
-  let rating = generateRandomRating();
-  let soldBy = generateRandomSoldBy();
-  let quaryArr = [product, price, shippingCost, rating, soldBy];
-  let quaryStr = "INSERT INTO main_product (name, price, shipping_cost, customer_rating, sold_by)\
-  VALUE (?)"
-  db.query(quaryStr, [quaryArr], function(err, result) {
-    if (err) {
-      console.log(err);
-    } else {
-      callback(result);
-    }
-  })
-}
-
-const insertProductClone = (product, callback) => {
-  findMainProductId(product, function(result) {
-    let mainId = result;
-    let quaryArr = [];
-    for (let i = 0; i < 3; i++) {
-      let name = generateRandomName(product);
-      while (hasDupName(name, quaryArr) === true) {
-        name = generateRandomName(product);
-      }
-      let price = generateRandomPrice("400");
-      let shippingCost = generateRandomPrice("50");
-      let rating = generateRandomRating();
-      let soldBy = generateRandomSoldBy();
-      let tempArr =  [mainId, name, price, shippingCost, rating, soldBy]
-      quaryArr.push(tempArr);
-      console.log(quaryArr);
-    }
-    let quaryStr = "INSERT INTO product_clone (clone_of, name, price, shipping_cost, customer_rating, sold_by)\
-    VALUES ?"
-    db.query(quaryStr, [quaryArr], function(err, result) {
-      if (err) {
-        console.log(err);
-      } else {
-        callback(result);
-      }
-    })
-  })
-}
-
-const findMainProductId = (product, callback) => {
-  let quaryArr = [product]
-  let quaryStr = "SELECT product_id FROM main_product\
+const findProductId = (name, callback) => {
+  let quaryArr = [name]
+  let quaryStr = "SELECT product_id FROM product\
   WHERE name = (?)"
   db.query(quaryStr, [quaryArr], function(err, result) {
     if (err) {
@@ -91,24 +50,89 @@ const findMainProductId = (product, callback) => {
   })
 }
 
+const formatArray = (arr) => {
+    let quaryArr = []
+    arr.forEach((name) => {
+      let price = generateRandomPrice("400");
+      let shippingCost = generateRandomPrice("50");
+      let rating = generateRandomRating();
+      let soldBy = generateRandomSoldBy();
+      let tempArr = [name, price, shippingCost, rating, soldBy];
+      quaryArr.push(tempArr);
+    });
+    csvHelpers.writeToCSV(quaryArr);
+}
+
+const formatCategory = (id) => {
+  let output = [];
+  let catData = generateRandomCategories();
+  if (catData !== false) {
+    for (let cat in catData) {
+      let catName = cat;
+      let catValue = catData[cat];
+      output.push([id, catName, catValue]);
+    }
+    return output;
+  }
+}
+
+
+async function insertProduct () {
+  let p2 = new Promise ((resolve, reject) => {
+    console.log('inserting product csv data');
+    let filePath = 'mysql_product.csv';
+    let columns = '(name, price, shipping_cost, customer_rating, sold_by)'
+    let quaryStr = `LOAD DATA LOCAL INFILE '${filePath}' INTO TABLE product FIELDS TERMINATED BY ','\
+    LINES TERMINATED BY '\\n' ${columns}`;
+    db.query(quaryStr, function(err, result) {
+      if (err) {
+        reject(err);
+      } else {
+        console.log('inserting product csv data DONE')
+        resolve(result);
+      }
+    })
+  })
+  return await p2
+}
+
+async function insertProductCategories () {
+  console.log('inserting categories csv data');
+  let p1 = new Promise((resolve, reject) => {
+    let filePath = 'mysql_category.csv';
+    let columns = '(belongs_to, category_name, category_value)'
+    let quaryStr = `LOAD DATA LOCAL INFILE '${filePath}' INTO TABLE category FIELDS TERMINATED BY ','\
+    LINES TERMINATED BY '\\n' ${columns}`;
+    db.query(quaryStr, function(err, result) {
+      if (err) {
+        reject(err);
+      } else {
+        console.log('DONE');
+        resolve(result);
+      }
+    })
+  })
+  return await p1;
+}
+
+const findLastInsertedProductId = () => {
+  return new Promise((resolve, reject) => {
+    let quaryStr = "SELECT MAX(product_id) FROM product"
+    db.query(quaryStr, function(err, result) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(Object.values(result[0])[0]);
+      }
+    })
+  })
+}
+
+
 const findRandomMainProduct = (callback) => {
   let quaryStr = 'SELECT * FROM main_product\
   ORDER BY RAND() LIMIT 1'
   db.query(quaryStr, function(err, result) {
-    let output = formatQueryData(result);
-    if (err) {
-      console.log(err);
-    } else {
-      callback(output);
-    }
-  });
-}
-
-const findClones = (productId, callback) => {
-  let quaryStr = 'SELECT * FROM product_clone\
-  WHERE clone_of = ?'
-  let quaryArr = [productId];
-  db.query(quaryStr, [quaryArr], function(err, result) {
     let output = formatQueryData(result);
     if (err) {
       console.log(err);
@@ -138,16 +162,10 @@ const formatQueryData = (data) => {
 }
 
 module.exports.assembleProductList = assembleProductList;
-module.exports.insertProductClone = insertProductClone;
-module.exports.insertMainProduct = insertMainProduct;
-module.exports.findMainProductId = findMainProductId;
-// module.exports.generateRandomName = generateRandomName;
-// module.exports.generateRandomPrice = generateRandomPrice;
-// module.exports.generateRandomRating = generateRandomRating;
-// module.exports.generateRandomSoldBy = generateRandomSoldBy;
-
-// name DECIMAL(18,2) NOT NULL,
-//   price DECIMAL(18,2) NOT NULL,
-//   shipping_cost DECIMAL(18,2) NOT NULL,
-//   customer_rating DECIMAL (18,2) NOT NULL,
-//   sold_by VARCHAR(50) NOT NULL,
+module.exports.insertProduct = insertProduct;
+module.exports.findProductId = findProductId;
+module.exports.generateRandomCategories = generateRandomCategories;
+module.exports.insertProductCategories = insertProductCategories;
+module.exports.formatArray = formatArray;
+module.exports.findLastInsertedProductId = findLastInsertedProductId;
+module.exports.formatCategory = formatCategory;
